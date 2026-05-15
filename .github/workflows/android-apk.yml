@@ -1,45 +1,60 @@
-name: Build Android APK
+    name: 🚀 One Click APK Build System
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  build:
+  build-apk:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      # 1. Repo holen
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      # 2. Node Setup (STABLE LTS)
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
+      # 3. Dependencies installieren
       - name: Install dependencies
         run: npm install
 
-      - name: Build web app
+      # 4. Web Build (Vite → dist/)
+      - name: Build Web App
         run: npm run build
 
-      - name: Sync Capacitor
+      # 5. Capacitor Sync
+      - name: Capacitor Sync
         run: npx cap sync android
 
+      # 6. Java Setup (FIXED)
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
+      # 7. Android Build (APK)
       - name: Build APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleRelease
 
+      # 8. APK als Artifact hochladen
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-release
+          name: NOOR-AL-QURAN-APK
           path: android/app/build/outputs/apk/release/
+
+      # 9. OPTIONAL: GitHub Release erstellen
+      - name: Create Release APK
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: android/app/build/outputs/apk/release/app-release.apk
