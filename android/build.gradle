@@ -1,5 +1,3 @@
-// Root Gradle (CAPACITOR STANDARD FIX)
-
 buildscript {
     repositories {
         google()
