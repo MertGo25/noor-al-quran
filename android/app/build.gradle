@@ -1,4 +1,4 @@
-// Root build.gradle (FORCED JAVA 17 COMPATIBILITY FIX)
+// Root build.gradle (CAPACITOR + ANDROID FIXED CONFIG)
 
 buildscript {
     repositories {
@@ -17,7 +17,9 @@ allprojects {
     }
 }
 
-// 🔥 FORCE JAVA 17 FOR ALL MODULES (fixes Capacitor + Java 21 crash)
+// ======================================
+// 🔥 FORCE JAVA 17 FOR ALL MODULES
+// ======================================
 subprojects { project ->
     afterEvaluate {
         if (project.hasProperty("android")) {
@@ -29,4 +31,11 @@ subprojects { project ->
             }
         }
     }
+}
+
+// ======================================
+// OPTIONAL: CLEAN TASK (helps CI stability)
+// ======================================
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
 }
